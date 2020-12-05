@@ -116,7 +116,9 @@ class Biquge(object):
                 if len(texts_each) > 0 and texts_each[0].text[1:6] != '正在加载中':
                     # 继续上次的下载
                     index_last = self.find_continue_point()
-                    if index_last != 0 and index_last > i:
+                    if index_last == len(self.href) - 1:
+                        break
+                    elif index_last != 0 and index_last > i:
                         i = index_last + 1
                     with open(os.path.join(self.path_file, self.book_title + ".txt"), 'a', encoding='utf-8') as f:
                         f.write('\n\n' + self.catalog[i] + '\n' +
@@ -144,6 +146,13 @@ class Biquge(object):
                 print('\n发生未知错误，跳过此章节')
                 print(self.catalog[i])
                 print(self.href[i])
+                with open(os.path.join(self.path_file, self.book_title + ".txt"), 'a', encoding='utf-8') as f:
+                    f.write('\n\n' + self.catalog[i] + '\n' + '\n网络连接中断或网站被封，跳过此章节'
+                            '\n%s' % self.href[i])
+                    f.write('\ngap:%d' % i)
+                i = i + 1
+        print("\n下载完成")
+        input()
 
 if __name__ == "__main__":
     test = Biquge()
